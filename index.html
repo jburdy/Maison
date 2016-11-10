@@ -8,6 +8,10 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    
+	  <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script>    
+    
   </head>
   <body>
     <section class="page-header">
@@ -39,6 +43,48 @@
 
 <p>You can @mention a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
 
+    <div>
+        <canvas id="chart"></canvas>
+    </div>
+      <script>
+	
+var jbColors = ["#FF6384", "#4BC0C0", "#FFCE56", "#E7E9ED", "#36A2EB", "#b662ff", "#62b1ff", "#62ffd2", "#eaff62"]
+	
+var data = {
+	datasets: [{
+			data: [],
+			backgroundColor: [],
+			label: 'datasets label ?'
+		}],
+	labels: []
+};
+
+var context = $("#chart");
+window.chart = new Chart(context, {data: data, type: 'polarArea'});
+
+function chartFillTsFlat(chart, tsChannelId, fieldIdList) {
+	$.ajax({
+		url: 'https://api.thingspeak.com/channels/'+ tsChannelId +'/feeds.json?results=1',
+		dataType: 'json',
+	}).done(function (results) {
+
+		fieldIdList.forEach(function (fieldId) {
+			chart.data.labels.push(results["channel"][fieldId]);
+			chart.data.datasets[0].data.push(parseInt(results["feeds"][0][fieldId]));
+			chart.data.datasets[0].backgroundColor.push(jbColors.pop());
+		});
+
+		chart.update();
+	});
+}
+
+chartFillTsFlat(window.chart, 25313, ['field3']);
+chartFillTsFlat(window.chart, 25337, ['field1', 'field3', 'field5']);
+chartFillTsFlat(window.chart, 25339, ['field1']);
+chartFillTsFlat(window.chart, 46518, ['field2']);
+chartFillTsFlat(window.chart, 124377, ['field1']);
+
+    </script>
 <h3>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
 

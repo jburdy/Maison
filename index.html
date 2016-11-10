@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr-CH">
   <head>
-    <meta charset="UTF-8">
-    <title>Maison</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+	<meta charset="UTF-8">
+	<title>Maison</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+	<link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     
-    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script>    
+	<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js"></script> 
+	<script src="jb.js"></script>
         
   </head>
   <body>
@@ -52,19 +53,6 @@ window.chart = new Chart(context, {data: data, type: 'polarArea'});
 
 var jbColors = ["#FF6384", "#4BC0C0", "#FFCE56", "#E7E9ED", "#36A2EB", "#b662ff", "#62b1ff", "#62ffd2", "#eaff62"]
 
-function chartFillTsFlat(chart, tsChannelId, fieldIdList) {
-	$.ajax({
-		url: 'https://api.thingspeak.com/channels/'+ tsChannelId +'/feeds.json?results=1',
-		dataType: 'json',
-	}).done(function (results) {
-		fieldIdList.forEach(function (fieldId) {
-			chart.data.labels.push(results["channel"][fieldId]);
-			chart.data.datasets[0].data.push(parseInt(results["feeds"][0][fieldId]));
-			chart.data.datasets[0].backgroundColor.push(jbColors.pop());
-		});
-		chart.update();
-	});
-}
 		  
 chartFillTsFlat(window.chart, 25313, ['field3']);
 chartFillTsFlat(window.chart, 25337, ['field1', 'field3', 'field5']);

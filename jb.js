@@ -7,3 +7,19 @@ window.chartColors = {
 	purple: 'rgb(153, 102, 255)',
 	grey: 'rgb(231,233,237)'
 };
+
+var jbColors = ["#FF6384", "#4BC0C0", "#FFCE56", "#E7E9ED", "#36A2EB", "#b662ff", "#62b1ff", "#62ffd2", "#eaff62"]
+
+function chartFillTsFlat(chart, tsChannelId, fieldIdList) {
+	$.ajax({
+		url: 'https://api.thingspeak.com/channels/'+ tsChannelId +'/feeds.json?results=1',
+		dataType: 'json',
+	}).done(function (results) {
+		fieldIdList.forEach(function (fieldId) {
+			chart.data.labels.push(results["channel"][fieldId]);
+			chart.data.datasets[0].data.push(parseInt(results["feeds"][0][fieldId]));
+			chart.data.datasets[0].backgroundColor.push(jbColors.pop());
+		});
+		chart.update();
+	});
+}

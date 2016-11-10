@@ -61,6 +61,22 @@ var data = {
 var context = $("#chart");
 window.chart = new Chart(context, {data: data, type: 'polarArea'});
 
+var jbColors = ["#FF6384", "#4BC0C0", "#FFCE56", "#E7E9ED", "#36A2EB", "#b662ff", "#62b1ff", "#62ffd2", "#eaff62"]
+
+function chartFillTsFlat(chart, tsChannelId, fieldIdList) {
+	$.ajax({
+		url: 'https://api.thingspeak.com/channels/'+ tsChannelId +'/feeds.json?results=1',
+		dataType: 'json',
+	}).done(function (results) {
+		fieldIdList.forEach(function (fieldId) {
+			chart.data.labels.push(results["channel"][fieldId]);
+			chart.data.datasets[0].data.push(parseInt(results["feeds"][0][fieldId]));
+			chart.data.datasets[0].backgroundColor.push(jbColors.pop());
+		});
+		chart.update();
+	});
+}
+		  
 chartFillTsFlat(window.chart, 25313, ['field3']);
 chartFillTsFlat(window.chart, 25337, ['field1', 'field3', 'field5']);
 chartFillTsFlat(window.chart, 25339, ['field1']);
